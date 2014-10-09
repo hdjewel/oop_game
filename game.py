@@ -11,6 +11,7 @@ DEBUG = False
 
 GAME_WIDTH = 5
 GAME_HEIGHT = 5
+board = (GAME_WIDTH, GAME_HEIGHT)
 
 #### Put class definitions here ####
 class Rock(GameElement):
@@ -28,16 +29,27 @@ class Gem(GameElement):
 class Character(GameElement):
     IMAGE = "Girl"
 
+    
+    def get_boundary(self, x, y):
+        if (self.x, self.y) != board:
+            "Don't go!"
+        else:
+            return (self.x, self.y)
+    
+
     def next_pos(self, direction):
+        
         if direction == "up":
             return (self.x, self.y - 1)
         elif direction == "down":
             return (self.x, self.y + 1)
         elif direction == "left":
-            return (self.x - 1, self.y)
+            self.get_boundary(self.x - 1, self.y)
         elif direction == "right":
             return (self.x + 1, self.y)
         return None
+
+
 
     def keyboard_handler(self, symbol, modifer):
         direction = None
