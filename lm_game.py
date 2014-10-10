@@ -31,103 +31,78 @@ class Character(GameElement):
 
     
     def get_boundary(self, x, y):
-        b = "this is the next position "
-        print 0, b, x, y
-        print_cant_go_there = 0
-        # save the unchanged value of x and y
-        if (x >= 5 ):
-            x -= 1
-            print_cant_go_there = 1
+        return True
+    #     print 0, x, y
+    #     print 0.0, board
+
+        if  ( (x >= board[0] ) or ( y >= board[1] ) or (x <= -1 ) and ( y <= -1) ) ):
+            print 0.1, x, y
+            return True
+        else:
+            print 0.2, x, y
             GAME_BOARD.draw_msg("You can't go there! Try another direction.")
-        elif ( y >= 5 ): 
-            y -= 1
-            print_cant_go_there = 1
-            GAME_BOARD.draw_msg("You can't go there! Try another direction.")
-        elif (x <= -1 ):
-            x += 1
-            print_cant_go_there = 1
-            GAME_BOARD.draw_msg("You can't go there! Try another direction.")
-        elif ( y <= -1):
-            y += 1
-            print_cant_go_there = 1
-            GAME_BOARD.draw_msg("You can't go there! Try another direction.")
-        
-        print 0.1, b, x, y        
-        return x, y, print_cant_go_there  # pass unchanged value of x and y
+            return False
     
 
-    def next_pos(self, x, y):
+    def next_pos(self, direction):
         # save_x = x
-        # # save_y = y
-        # if direction == "up":
-        print 4.1, self.x, self.y
-        return (self.get_boundary(self.x, self.y))
-        #elif direction == "down":
-        #    return (self.get_boundary(self.x, self.y))
-            # if (self.get_boundary(self.x, self.y)) == True:
-            #     print 4.2, self.x, (self.y + 1)
-            #     return (self.x, self.y + 1)
-            # else:
-            #     print 4.3, self.x, self.y
-            #     return (self.x, self.y)
-        # elif direction == "left":
-        #     if (self.get_boundary(self.x, self.y)) == True:
-        #         return (self.x - 1, self.y)
-        #     else:
-        #          return (self.x, self.y)
-        # elif direction == "right":
-        #     if (self.get_boundary(self.x, self.y)) == True:
-        #         return (self.x + 1, self.y)
-        #     else:
-        #         return (self.x, self.y)
+        # save_y = y
+        if direction == "up":
+            if (self.get_boundary(self.x, self.y)) == True:
+                return (self.x, self.y - 1)
+            else:
+                return (self.x, self.y)
+        elif direction == "down":
+            if (self.get_boundary(self.x, self.y)) == True:
+                return (self.x, self.y + 1)
+            else:
+                return (self.x, self.y)
+        elif direction == "left":
+            if (self.get_boundary(self.x, self.y)) == True:
+                return (self.x - 1, self.y)
+            else:
+                return (self.x, self.y)
+        elif direction == "right":
+            if (self.get_boundary(self.x, self.y)) == True:
+                return (self.x + 1, self.y)
+            else:
+                return (self.x, self.y)
+
+
 
     def keyboard_handler(self, symbol, modifer):
         direction = None
-        next_x = self.x
-        next_y = self.y
         if symbol== key.UP:
             direction = "up"
-            self.y -= 1
         elif symbol == key.DOWN:
             direction = "down"
-            self.y += 1 
         elif symbol == key.LEFT:
             direction = "left"
-            self.x -= 1
         elif symbol == key.RIGHT:
-            self.x += 1
             direction = "right"
 
         self.board.draw_msg("[%s] moves %s" % (self.IMAGE, direction))
 
+    def move_character(self, direction):
         if direction:
-            print_cant_go_there = 0
-            next_location = self.next_pos(self.x, self.y)
-            b = " this is the return value of next_pos = "
-            print 1.0, b, next_location
-            print_cant_go_there = next_location[2]
-            if print_cant_go_there == 1:
-                self.x = next_x
-                self.y = next_y
+            next_location = self.next_pos(direction)
+            # if self.x < 0 or self.y < 0 or self.x == 5 or self.y == 5:
+            #     next_location = (self.x, self.y)
+            print 1.0, next_location
+            print 1, self.x, self.y
 
-            b = " == "
             if next_location:
-                # next_x = next_location[0]
-                # next_y = next_location[1]
-                # print 1.3, self.x, self.y, b, next_x, next_y
+                next_x = next_location[0]
+                next_y = next_location[1]
                 # save occupant of next position
                 existing_el = self.board.get_el(next_x, next_y)
                 if existing_el:
                     existing_el.interact(self)
                 if existing_el and existing_el.SOLID:
                     self.board.draw_msg("There's something in my way!")
-                    print 1.5, self.x, self.y, b, next_x, next_y
                 elif existing_el is None or not existing_el.SOLID:
-                    print 1.7, self.x, self.y, b, next_x, next_y
                     self.board.del_el(self.x, self.y)
                     self.board.set_el(next_x, next_y, self)
-#                    self.board.del_el(next_x, next_y)
-#                    self.board.set_el(self.x, self.y, self)
 
 
     def __init__(self):
@@ -181,7 +156,7 @@ def initialize():
     #initializes Character
     player = Character()
     GAME_BOARD.register(player)
-    GAME_BOARD.set_el(2, 4, player)
+    GAME_BOARD.set_el(2, 2, player)
 
     """
     # initializes the Character Horns
